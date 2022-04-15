@@ -10,6 +10,7 @@ contract ERC721AMint is ERC721A, Ownable {
     uint256 public maxMintPerTx = 5;
     uint256 public maxMintPerAccount = 5;
     bool public saleActive;
+    string public baseURI;
     mapping(address => uint256) public accountMinted;
 
     constructor() ERC721A("Azuki", "AZUKI") {}
@@ -17,6 +18,10 @@ contract ERC721AMint is ERC721A, Ownable {
     modifier callerIsUser() {
         require(tx.origin == msg.sender, "The caller is another contract");
         _;
+    }
+
+    function _baseURI() internal view override returns (string memory) {
+        return baseURI;
     }
 
     function mint(uint256 quantity) external payable callerIsUser {
@@ -55,5 +60,14 @@ contract ERC721AMint is ERC721A, Ownable {
 
     function setSaleActive(bool _saleActive) public onlyOwner {
         saleActive = _saleActive;
+    }
+
+    function setBaseURI(string memory baseURI_) public onlyOwner {
+        baseURI = baseURI_;
+    }
+
+    function withdraw() public onlyOwner {
+        uint256 balance = address(this).balance;
+        payable(msg.sender).transfer(balance);
     }
 }
