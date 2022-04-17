@@ -4,8 +4,10 @@ import "@nomiclabs/hardhat-etherscan";
 import "@openzeppelin/hardhat-upgrades";
 import { task } from "hardhat/config";
 import { Signer, utils } from "ethers";
+import { mkdirSync, readFileSync, writeFileSync, existsSync } from "fs";
 import { compileSetting, allowVerifyChain } from "./scripts/deployTool";
 import { RPCS } from "./scripts/network";
+import { MerkleTree } from 'merkletreejs';
 
 import {
   deployContract,
@@ -36,48 +38,51 @@ task("accounts", "Prints the list of accounts", async (taskArgs, bre) => {
   }
 });
 
-// npx hardhat deploy --name ttt --symbol ttt --supply 1000000000000000000000000 --owner 0x319a0cfD7595b0085fF6003643C7eD685269F851 --network metermain
-// task("deploy", "deploy contract")
-//   .addParam("name", "Token name")
-//   .addParam("symbol", "Token symbol")
-//   .addParam("supply", "Token initialSupply require decimal")
-//   .addParam("owner", "Token will mint to owner address")
-//   .setAction(
-//     async ({ name, symbol, supply, owner }, { ethers, run, network }) => {
-//       await run("compile");
-//       const signers = await ethers.getSigners();
+// npx hardhat getroot --json ./leaves.json
+task("getroot", "set root")
+  .addParam("json", "json file")
+  .setAction(
+    async ({ json }, { ethers, run, network }) => {
+      let jsonArr = JSON.parse(readFileSync(json).toString());
+      let hashArr = [];
+      for (let i = 0; i < jsonArr.length; i++) {
+        hashArr[i] = utils.defaultAbiCoder.encode(["uint256", "address"], [BN(jsonArr[i].amount), jsonArr[i].address]);
+      }
+      const leaves = hashArr.map(x => ethers.utils.keccak256(x));
+      const tree = new MerkleTree(leaves, ethers.utils.keccak256, { sort: true });
+      const root = "0x" + tree.getRoot().toString('hex')
+      console.log('root:', root)
+    }
+  );
+// npx hardhat makeproof --json ./leaves.json
+task("makeproof", "make proof")
+  .addParam("json", "json file")
+  .setAction(
+    async ({ json }, { ethers, run, network }) => {
+      let jsonArr = JSON.parse(readFileSync(json).toString());
+      let hashArr = [];
+      for (let i = 0; i < jsonArr.length; i++) {
+        hashArr[i] = utils.defaultAbiCoder.encode(["uint256", "address"], [BN(jsonArr[i].amount), jsonArr[i].address]);
+      }
+      const leaves = hashArr.map(x => ethers.utils.keccak256(x));
+      const tree = new MerkleTree(leaves, ethers.utils.keccak256, { sort: true });
+      const root = "0x" + tree.getRoot().toString('hex')
 
-//       const token = await deployContract(
-//         ethers,
-//         "ERC20MintablePauseable",
-//         network.name,
-//         signers[0],
-//         [name, symbol, supply, owner]
-//       ) as ERC20MintablePauseable;
+      console.log(root)
 
-//     }
-//   );
+      for (let i = 0; i < jsonArr.length; i++) {
+        const leaf = ethers.utils.keccak256(hashArr[i]);
+        const proof = tree.getHexProof(leaf);
+        jsonArr[i].proof = (JSON.stringify(proof)).replace(/\"/g, '');
+        jsonArr[i].leaf = leaf;
+        console.log("verify:", tree.verify(proof, leaf, root))
+        console.log("proof", proof)
+      }
+      writeFileSync(json, JSON.stringify(jsonArr));
 
-// npx hardhat mint --to 0x319a0cfD7595b0085fF6003643C7eD685269F851 --amount 10000000000000000000000 --network metermain
-// task("mint", "mint token")
-//   .addParam("to", "mint to address")
-//   .addParam("amount", "mint amount")
-//   .setAction(
-//     async ({ to, amount }, { ethers, run, network }) => {
+    }
+  );
 
-//       await run("compile");
-//       const signers = await ethers.getSigners();
-
-//       let token = (await ethers.getContractAt(
-//         "ERC20MintablePauseableUpgradeable",
-//         getContract(network.name, "ERC20MintablePauseableUpgradeable"),
-//         signers[0]
-//       )) as ERC20MintablePauseableUpgradeable;
-
-//       await token.mint(to, amount);
-//     }
-//   );
-// npx hardhat veri
 task("veri", "verify contracts").setAction(
   async ({ }, { ethers, run, network }) => {
     if (allowVerifyChain.indexOf(network.name) > -1) {
