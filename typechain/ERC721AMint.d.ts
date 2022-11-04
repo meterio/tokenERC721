@@ -14,7 +14,6 @@ import {
   Contract,
   ContractTransaction,
   Overrides,
-  PayableOverrides,
   CallOverrides,
 } from "@ethersproject/contracts";
 import { BytesLike } from "@ethersproject/bytes";
@@ -24,14 +23,13 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 interface ERC721AMintInterface extends ethers.utils.Interface {
   functions: {
     "accountMinted(address)": FunctionFragment;
+    "airdrop(address[])": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "baseURI()": FunctionFragment;
-    "cost()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "maxMintPerAccount()": FunctionFragment;
-    "maxMintPerTx()": FunctionFragment;
     "maxSupply()": FunctionFragment;
     "mint(uint256)": FunctionFragment;
     "name()": FunctionFragment;
@@ -43,36 +41,31 @@ interface ERC721AMintInterface extends ethers.utils.Interface {
     "saleActive()": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setBaseURI(string)": FunctionFragment;
-    "setCost(uint256)": FunctionFragment;
-    "setMaxMintPerAccount(uint256)": FunctionFragment;
-    "setMaxMintPerTx(uint256)": FunctionFragment;
-    "setMaxSupply(uint256)": FunctionFragment;
     "setRoot(bytes32)": FunctionFragment;
     "setSaleActive(bool)": FunctionFragment;
-    "setWlCost(uint256)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
+    "tokenByIndex(uint256)": FunctionFragment;
+    "tokenOfOwnerByIndex(address,uint256)": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "withdraw()": FunctionFragment;
     "wlClaimed(address)": FunctionFragment;
     "wlMint(bytes32[],uint256)": FunctionFragment;
-    "wlcost()": FunctionFragment;
   };
 
   encodeFunctionData(
     functionFragment: "accountMinted",
     values: [string]
   ): string;
+  encodeFunctionData(functionFragment: "airdrop", values: [string[]]): string;
   encodeFunctionData(
     functionFragment: "approve",
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(functionFragment: "baseURI", values?: undefined): string;
-  encodeFunctionData(functionFragment: "cost", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
@@ -83,10 +76,6 @@ interface ERC721AMintInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "maxMintPerAccount",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "maxMintPerTx",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "maxSupply", values?: undefined): string;
@@ -115,36 +104,24 @@ interface ERC721AMintInterface extends ethers.utils.Interface {
     values: [string, boolean]
   ): string;
   encodeFunctionData(functionFragment: "setBaseURI", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "setCost",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setMaxMintPerAccount",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setMaxMintPerTx",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setMaxSupply",
-    values: [BigNumberish]
-  ): string;
   encodeFunctionData(functionFragment: "setRoot", values: [BytesLike]): string;
   encodeFunctionData(
     functionFragment: "setSaleActive",
     values: [boolean]
   ): string;
   encodeFunctionData(
-    functionFragment: "setWlCost",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "tokenByIndex",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "tokenOfOwnerByIndex",
+    values: [string, BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "tokenURI",
     values: [BigNumberish]
@@ -161,22 +138,20 @@ interface ERC721AMintInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "withdraw", values?: undefined): string;
   encodeFunctionData(functionFragment: "wlClaimed", values: [string]): string;
   encodeFunctionData(
     functionFragment: "wlMint",
     values: [BytesLike[], BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "wlcost", values?: undefined): string;
 
   decodeFunctionResult(
     functionFragment: "accountMinted",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "airdrop", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "baseURI", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "cost", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getApproved",
     data: BytesLike
@@ -187,10 +162,6 @@ interface ERC721AMintInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "maxMintPerAccount",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "maxMintPerTx",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "maxSupply", data: BytesLike): Result;
@@ -213,30 +184,24 @@ interface ERC721AMintInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setBaseURI", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setCost", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "setMaxMintPerAccount",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setMaxMintPerTx",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setMaxSupply",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "setRoot", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setSaleActive",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "setWlCost", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "tokenByIndex",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "tokenOfOwnerByIndex",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
@@ -250,10 +215,8 @@ interface ERC721AMintInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "wlClaimed", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "wlMint", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "wlcost", data: BytesLike): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
@@ -296,6 +259,16 @@ export class ERC721AMint extends Contract {
       0: BigNumber;
     }>;
 
+    airdrop(
+      accounts: string[],
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "airdrop(address[])"(
+      accounts: string[],
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -328,14 +301,6 @@ export class ERC721AMint extends Contract {
 
     "baseURI()"(overrides?: CallOverrides): Promise<{
       0: string;
-    }>;
-
-    cost(overrides?: CallOverrides): Promise<{
-      0: BigNumber;
-    }>;
-
-    "cost()"(overrides?: CallOverrides): Promise<{
-      0: BigNumber;
     }>;
 
     getApproved(
@@ -376,14 +341,6 @@ export class ERC721AMint extends Contract {
       0: BigNumber;
     }>;
 
-    maxMintPerTx(overrides?: CallOverrides): Promise<{
-      0: BigNumber;
-    }>;
-
-    "maxMintPerTx()"(overrides?: CallOverrides): Promise<{
-      0: BigNumber;
-    }>;
-
     maxSupply(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
@@ -394,12 +351,12 @@ export class ERC721AMint extends Contract {
 
     mint(
       quantity: BigNumberish,
-      overrides?: PayableOverrides
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     "mint(uint256)"(
       quantity: BigNumberish,
-      overrides?: PayableOverrides
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     name(overrides?: CallOverrides): Promise<{
@@ -489,46 +446,6 @@ export class ERC721AMint extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    setCost(
-      _cost: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "setCost(uint256)"(
-      _cost: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    setMaxMintPerAccount(
-      _maxMintPerAccount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "setMaxMintPerAccount(uint256)"(
-      _maxMintPerAccount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    setMaxMintPerTx(
-      _maxMintPerTx: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "setMaxMintPerTx(uint256)"(
-      _maxMintPerTx: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    setMaxSupply(
-      _maxSupply: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "setMaxSupply(uint256)"(
-      _maxSupply: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
     setRoot(
       _root: BytesLike,
       overrides?: Overrides
@@ -546,16 +463,6 @@ export class ERC721AMint extends Contract {
 
     "setSaleActive(bool)"(
       _saleActive: boolean,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    setWlCost(
-      _wlcost: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "setWlCost(uint256)"(
-      _wlcost: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -579,6 +486,36 @@ export class ERC721AMint extends Contract {
 
     "symbol()"(overrides?: CallOverrides): Promise<{
       0: string;
+    }>;
+
+    tokenByIndex(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "tokenByIndex(uint256)"(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    tokenOfOwnerByIndex(
+      owner: string,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "tokenOfOwnerByIndex(address,uint256)"(
+      owner: string,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
     }>;
 
     tokenURI(
@@ -627,43 +564,31 @@ export class ERC721AMint extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    withdraw(overrides?: Overrides): Promise<ContractTransaction>;
-
-    "withdraw()"(overrides?: Overrides): Promise<ContractTransaction>;
-
     wlClaimed(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<{
-      0: boolean;
+      0: BigNumber;
     }>;
 
     "wlClaimed(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<{
-      0: boolean;
+      0: BigNumber;
     }>;
 
     wlMint(
       proof: BytesLike[],
       quantity: BigNumberish,
-      overrides?: PayableOverrides
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     "wlMint(bytes32[],uint256)"(
       proof: BytesLike[],
       quantity: BigNumberish,
-      overrides?: PayableOverrides
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
-
-    wlcost(overrides?: CallOverrides): Promise<{
-      0: BigNumber;
-    }>;
-
-    "wlcost()"(overrides?: CallOverrides): Promise<{
-      0: BigNumber;
-    }>;
   };
 
   accountMinted(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
@@ -672,6 +597,16 @@ export class ERC721AMint extends Contract {
     arg0: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  airdrop(
+    accounts: string[],
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "airdrop(address[])"(
+    accounts: string[],
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   approve(
     to: string,
@@ -695,10 +630,6 @@ export class ERC721AMint extends Contract {
   baseURI(overrides?: CallOverrides): Promise<string>;
 
   "baseURI()"(overrides?: CallOverrides): Promise<string>;
-
-  cost(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "cost()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   getApproved(
     tokenId: BigNumberish,
@@ -726,22 +657,18 @@ export class ERC721AMint extends Contract {
 
   "maxMintPerAccount()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-  maxMintPerTx(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "maxMintPerTx()"(overrides?: CallOverrides): Promise<BigNumber>;
-
   maxSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
   "maxSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   mint(
     quantity: BigNumberish,
-    overrides?: PayableOverrides
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   "mint(uint256)"(
     quantity: BigNumberish,
-    overrides?: PayableOverrides
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   name(overrides?: CallOverrides): Promise<string>;
@@ -808,46 +735,6 @@ export class ERC721AMint extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  setCost(
-    _cost: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "setCost(uint256)"(
-    _cost: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  setMaxMintPerAccount(
-    _maxMintPerAccount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "setMaxMintPerAccount(uint256)"(
-    _maxMintPerAccount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  setMaxMintPerTx(
-    _maxMintPerTx: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "setMaxMintPerTx(uint256)"(
-    _maxMintPerTx: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  setMaxSupply(
-    _maxSupply: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "setMaxSupply(uint256)"(
-    _maxSupply: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
   setRoot(
     _root: BytesLike,
     overrides?: Overrides
@@ -868,16 +755,6 @@ export class ERC721AMint extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  setWlCost(
-    _wlcost: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "setWlCost(uint256)"(
-    _wlcost: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
   supportsInterface(
     interfaceId: BytesLike,
     overrides?: CallOverrides
@@ -891,6 +768,28 @@ export class ERC721AMint extends Contract {
   symbol(overrides?: CallOverrides): Promise<string>;
 
   "symbol()"(overrides?: CallOverrides): Promise<string>;
+
+  tokenByIndex(
+    index: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "tokenByIndex(uint256)"(
+    index: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  tokenOfOwnerByIndex(
+    owner: string,
+    index: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "tokenOfOwnerByIndex(address,uint256)"(
+    owner: string,
+    index: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
@@ -927,32 +826,24 @@ export class ERC721AMint extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  withdraw(overrides?: Overrides): Promise<ContractTransaction>;
-
-  "withdraw()"(overrides?: Overrides): Promise<ContractTransaction>;
-
-  wlClaimed(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+  wlClaimed(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   "wlClaimed(address)"(
     arg0: string,
     overrides?: CallOverrides
-  ): Promise<boolean>;
+  ): Promise<BigNumber>;
 
   wlMint(
     proof: BytesLike[],
     quantity: BigNumberish,
-    overrides?: PayableOverrides
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   "wlMint(bytes32[],uint256)"(
     proof: BytesLike[],
     quantity: BigNumberish,
-    overrides?: PayableOverrides
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
-
-  wlcost(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "wlcost()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   callStatic: {
     accountMinted(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
@@ -961,6 +852,13 @@ export class ERC721AMint extends Contract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    airdrop(accounts: string[], overrides?: CallOverrides): Promise<void>;
+
+    "airdrop(address[])"(
+      accounts: string[],
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     approve(
       to: string,
@@ -984,10 +882,6 @@ export class ERC721AMint extends Contract {
     baseURI(overrides?: CallOverrides): Promise<string>;
 
     "baseURI()"(overrides?: CallOverrides): Promise<string>;
-
-    cost(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "cost()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     getApproved(
       tokenId: BigNumberish,
@@ -1014,10 +908,6 @@ export class ERC721AMint extends Contract {
     maxMintPerAccount(overrides?: CallOverrides): Promise<BigNumber>;
 
     "maxMintPerAccount()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    maxMintPerTx(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "maxMintPerTx()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     maxSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1091,43 +981,6 @@ export class ERC721AMint extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setCost(_cost: BigNumberish, overrides?: CallOverrides): Promise<void>;
-
-    "setCost(uint256)"(
-      _cost: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setMaxMintPerAccount(
-      _maxMintPerAccount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "setMaxMintPerAccount(uint256)"(
-      _maxMintPerAccount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setMaxMintPerTx(
-      _maxMintPerTx: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "setMaxMintPerTx(uint256)"(
-      _maxMintPerTx: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setMaxSupply(
-      _maxSupply: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "setMaxSupply(uint256)"(
-      _maxSupply: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     setRoot(_root: BytesLike, overrides?: CallOverrides): Promise<void>;
 
     "setRoot(bytes32)"(
@@ -1145,13 +998,6 @@ export class ERC721AMint extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setWlCost(_wlcost: BigNumberish, overrides?: CallOverrides): Promise<void>;
-
-    "setWlCost(uint256)"(
-      _wlcost: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -1165,6 +1011,28 @@ export class ERC721AMint extends Contract {
     symbol(overrides?: CallOverrides): Promise<string>;
 
     "symbol()"(overrides?: CallOverrides): Promise<string>;
+
+    tokenByIndex(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "tokenByIndex(uint256)"(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    tokenOfOwnerByIndex(
+      owner: string,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "tokenOfOwnerByIndex(address,uint256)"(
+      owner: string,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
@@ -1201,16 +1069,12 @@ export class ERC721AMint extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    withdraw(overrides?: CallOverrides): Promise<void>;
-
-    "withdraw()"(overrides?: CallOverrides): Promise<void>;
-
-    wlClaimed(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+    wlClaimed(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     "wlClaimed(address)"(
       arg0: string,
       overrides?: CallOverrides
-    ): Promise<boolean>;
+    ): Promise<BigNumber>;
 
     wlMint(
       proof: BytesLike[],
@@ -1223,10 +1087,6 @@ export class ERC721AMint extends Contract {
       quantity: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    wlcost(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "wlcost()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   filters: {
@@ -1262,6 +1122,13 @@ export class ERC721AMint extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    airdrop(accounts: string[], overrides?: Overrides): Promise<BigNumber>;
+
+    "airdrop(address[])"(
+      accounts: string[],
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -1284,10 +1151,6 @@ export class ERC721AMint extends Contract {
     baseURI(overrides?: CallOverrides): Promise<BigNumber>;
 
     "baseURI()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    cost(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "cost()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     getApproved(
       tokenId: BigNumberish,
@@ -1315,22 +1178,15 @@ export class ERC721AMint extends Contract {
 
     "maxMintPerAccount()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    maxMintPerTx(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "maxMintPerTx()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     maxSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     "maxSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    mint(
-      quantity: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<BigNumber>;
+    mint(quantity: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
 
     "mint(uint256)"(
       quantity: BigNumberish,
-      overrides?: PayableOverrides
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1397,43 +1253,6 @@ export class ERC721AMint extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    setCost(_cost: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
-
-    "setCost(uint256)"(
-      _cost: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    setMaxMintPerAccount(
-      _maxMintPerAccount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "setMaxMintPerAccount(uint256)"(
-      _maxMintPerAccount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    setMaxMintPerTx(
-      _maxMintPerTx: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "setMaxMintPerTx(uint256)"(
-      _maxMintPerTx: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    setMaxSupply(
-      _maxSupply: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "setMaxSupply(uint256)"(
-      _maxSupply: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
     setRoot(_root: BytesLike, overrides?: Overrides): Promise<BigNumber>;
 
     "setRoot(bytes32)"(
@@ -1451,13 +1270,6 @@ export class ERC721AMint extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    setWlCost(_wlcost: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
-
-    "setWlCost(uint256)"(
-      _wlcost: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -1471,6 +1283,28 @@ export class ERC721AMint extends Contract {
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
     "symbol()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    tokenByIndex(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "tokenByIndex(uint256)"(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    tokenOfOwnerByIndex(
+      owner: string,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "tokenOfOwnerByIndex(address,uint256)"(
+      owner: string,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     tokenURI(
       tokenId: BigNumberish,
@@ -1510,10 +1344,6 @@ export class ERC721AMint extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    withdraw(overrides?: Overrides): Promise<BigNumber>;
-
-    "withdraw()"(overrides?: Overrides): Promise<BigNumber>;
-
     wlClaimed(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     "wlClaimed(address)"(
@@ -1524,18 +1354,14 @@ export class ERC721AMint extends Contract {
     wlMint(
       proof: BytesLike[],
       quantity: BigNumberish,
-      overrides?: PayableOverrides
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     "wlMint(bytes32[],uint256)"(
       proof: BytesLike[],
       quantity: BigNumberish,
-      overrides?: PayableOverrides
+      overrides?: Overrides
     ): Promise<BigNumber>;
-
-    wlcost(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "wlcost()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -1547,6 +1373,16 @@ export class ERC721AMint extends Contract {
     "accountMinted(address)"(
       arg0: string,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    airdrop(
+      accounts: string[],
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "airdrop(address[])"(
+      accounts: string[],
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     approve(
@@ -1574,10 +1410,6 @@ export class ERC721AMint extends Contract {
     baseURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "baseURI()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    cost(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "cost()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getApproved(
       tokenId: BigNumberish,
@@ -1607,22 +1439,18 @@ export class ERC721AMint extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    maxMintPerTx(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "maxMintPerTx()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     maxSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "maxSupply()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     mint(
       quantity: BigNumberish,
-      overrides?: PayableOverrides
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     "mint(uint256)"(
       quantity: BigNumberish,
-      overrides?: PayableOverrides
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1692,46 +1520,6 @@ export class ERC721AMint extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    setCost(
-      _cost: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "setCost(uint256)"(
-      _cost: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    setMaxMintPerAccount(
-      _maxMintPerAccount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "setMaxMintPerAccount(uint256)"(
-      _maxMintPerAccount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    setMaxMintPerTx(
-      _maxMintPerTx: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "setMaxMintPerTx(uint256)"(
-      _maxMintPerTx: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    setMaxSupply(
-      _maxSupply: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "setMaxSupply(uint256)"(
-      _maxSupply: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
     setRoot(
       _root: BytesLike,
       overrides?: Overrides
@@ -1752,16 +1540,6 @@ export class ERC721AMint extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    setWlCost(
-      _wlcost: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "setWlCost(uint256)"(
-      _wlcost: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -1775,6 +1553,28 @@ export class ERC721AMint extends Contract {
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "symbol()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    tokenByIndex(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "tokenByIndex(uint256)"(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    tokenOfOwnerByIndex(
+      owner: string,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "tokenOfOwnerByIndex(address,uint256)"(
+      owner: string,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     tokenURI(
       tokenId: BigNumberish,
@@ -1814,10 +1614,6 @@ export class ERC721AMint extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    withdraw(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "withdraw()"(overrides?: Overrides): Promise<PopulatedTransaction>;
-
     wlClaimed(
       arg0: string,
       overrides?: CallOverrides
@@ -1831,17 +1627,13 @@ export class ERC721AMint extends Contract {
     wlMint(
       proof: BytesLike[],
       quantity: BigNumberish,
-      overrides?: PayableOverrides
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     "wlMint(bytes32[],uint256)"(
       proof: BytesLike[],
       quantity: BigNumberish,
-      overrides?: PayableOverrides
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
-
-    wlcost(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "wlcost()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

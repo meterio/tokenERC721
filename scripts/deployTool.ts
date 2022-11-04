@@ -26,6 +26,15 @@ export function compileSetting(version: string, runs: number) {
       optimizer: {
         enabled: true,
         runs: runs,
+      }, outputSelection: {
+        "*": {
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "metadata", // <-- add this
+          ]
+        },
       },
     },
   };

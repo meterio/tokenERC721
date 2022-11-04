@@ -58,30 +58,24 @@ export function getContractJson(network: string, name: string) {
 }
 
 export async function deployContract(
-  ethers: HardhatEthersHelpers,
   name: string,
   network: string,
+  getContractFactory: Function,
   signer: Signer,
   args: Array<any> = [],
-  libraries: Libraries = {}
+  libraries: Object = {}
 ): Promise<Contract> {
-  let address = getContract(network, name);
-  if (address == constants.AddressZero || network == "hardhat") {
-    const factory = await ethers.getContractFactory(name, {
-      signer: signer,
-      libraries: libraries,
-    });
-    const contract = await factory.deploy(...args, overrides);
-    console.log("Deploying:", name);
-    console.log("  to", contract.address);
-    console.log("  in", contract.deployTransaction.hash);
-    await saveFile(network, name, contract, args, libraries);
-    return contract.deployed();
-  } else {
-    console.log("Contract:", name);
-    console.log("  on", address.white);
-    return await ethers.getContractAt(name, address, signer);
-  }
+  const factory = await getContractFactory(name, {
+    signer: signer,
+    libraries: libraries,
+  });
+  const contract = await factory.deploy(...args);
+  console.log("Deploying", name);
+  console.log("  to", contract.address);
+  console.log("  in", contract.deployTransaction.hash);
+  // console.log("  receipt", await contract.deployTransaction.wait());
+  await saveFile(network, name, contract, args, libraries);
+  return contract.deployed();
 }
 
 export async function saveFile(

@@ -18,7 +18,7 @@ import {
 } from "./scripts/helper";
 import { getSign } from "./scripts/permitSign"
 
-// import { ERC20MintablePauseable, ERC20MintablePauseableUpgradeable } from './typechain'
+import { ERC721AMint, ERC721Twitter } from './typechain'
 
 
 const dotenv = require("dotenv");
@@ -38,13 +38,27 @@ task("accounts", "Prints the list of accounts", async (taskArgs, bre) => {
   }
 });
 
+task("deploy", "deploy contract")
+  .setAction(
+    async ({ }, { ethers, run, network }) => {
+      await run("compile");
+      const [deployer] = await ethers.getSigners();
+
+      const factory = await deployContract(
+        "contracts/ERC721AMint.sol:ERC721AMint",
+        network.name,
+        ethers.getContractFactory,
+        deployer
+      ) as ERC721AMint;
+    }
+  );
 // npx hardhat getroot --json ./leaves.json
 task("getroot", "set root")
   .addParam("json", "json file")
   .setAction(
     async ({ json }, { ethers, run, network }) => {
       let jsonArr = JSON.parse(readFileSync(json).toString());
-      let hashArr = [];
+      let hashArr: any[] = [];
       for (let i = 0; i < jsonArr.length; i++) {
         hashArr[i] = utils.defaultAbiCoder.encode(["uint256", "address"], [BN(jsonArr[i].amount), jsonArr[i].address]);
       }
@@ -60,7 +74,7 @@ task("makeproof", "make proof")
   .setAction(
     async ({ json }, { ethers, run, network }) => {
       let jsonArr = JSON.parse(readFileSync(json).toString());
-      let hashArr = [];
+      let hashArr: any[] = [];
       for (let i = 0; i < jsonArr.length; i++) {
         hashArr[i] = utils.defaultAbiCoder.encode(["uint256", "address"], [BN(jsonArr[i].amount), jsonArr[i].address]);
       }
@@ -93,6 +107,21 @@ task("veri", "verify contracts").setAction(
     }
   }
 );
+
+task("dt", "deploy ERC721 Twitter contract")
+  .setAction(
+    async ({ }, { ethers, run, network }) => {
+      await run("compile");
+      const [deployer] = await ethers.getSigners();
+      const factory = await deployContract(
+        "ERC721Twitter",
+        network.name,
+        ethers.getContractFactory,
+        deployer,
+        ["Twitter username NFT", "TUN"]
+      ) as ERC721Twitter;
+    }
+  );
 
 export default {
   networks: RPCS,

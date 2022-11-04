@@ -1,0 +1,6 @@
+{
+    "address": "0xB61BE82588cB6920f207F7e779bA73dF5f539085",
+    "constructorArguments": [],
+    "libraries": {},
+    "contract": "contracts/ERC721AMint.sol:ERC721AMint"
+}

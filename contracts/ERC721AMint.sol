@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract ERC721AMint is ERC721A, Ownable {
     uint256 public maxSupply = 9999;
-    uint256 public cost = 0.001 ether;
+    uint256 public cost = 0;
     uint256 public maxMintPerTx = 5;
     uint256 public maxMintPerAccount = 5;
     bool public saleActive;
