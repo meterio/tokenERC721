@@ -1,4 +1,5 @@
 import "hardhat-typechain";
+import "@nomiclabs/hardhat-waffle";
 import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-etherscan";
 import "@openzeppelin/hardhat-upgrades";
@@ -111,7 +112,7 @@ task("veri", "verify contracts").setAction(
 task("dt", "deploy ERC721 Twitter contract")
   .setAction(
     async ({ }, { ethers, run, network }) => {
-      await run("compile");
+      // await run("compile");
       const [deployer] = await ethers.getSigners();
       const factory = await deployContract(
         "ERC721Twitter",

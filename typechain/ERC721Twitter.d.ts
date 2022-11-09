@@ -25,6 +25,7 @@ interface ERC721TwitterInterface extends ethers.utils.Interface {
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
     "MINTER_ROLE()": FunctionFragment;
     "PERMIT_TYPEHASH()": FunctionFragment;
+    "address2User(address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
@@ -33,8 +34,9 @@ interface ERC721TwitterInterface extends ethers.utils.Interface {
     "getRoleMemberCount(bytes32)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
+    "id2address(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "mint(address,uint256,string)": FunctionFragment;
+    "mint(address,uint256,string,bytes)": FunctionFragment;
     "name()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
@@ -44,9 +46,14 @@ interface ERC721TwitterInterface extends ethers.utils.Interface {
     "setUsername(uint256,string,bytes)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
+    "tokenByIndex(uint256)": FunctionFragment;
+    "tokenOfOwnerByIndex(address,uint256)": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
+    "totalSupply()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
+    "user2Address(string)": FunctionFragment;
     "username(uint256)": FunctionFragment;
+    "verifySignature(address,uint256,string,bytes)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -60,6 +67,10 @@ interface ERC721TwitterInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "PERMIT_TYPEHASH",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "address2User",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "approve",
@@ -91,12 +102,16 @@ interface ERC721TwitterInterface extends ethers.utils.Interface {
     values: [BytesLike, string]
   ): string;
   encodeFunctionData(
+    functionFragment: "id2address",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "mint",
-    values: [string, BigNumberish, string]
+    values: [string, BigNumberish, string, BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(
@@ -129,16 +144,36 @@ interface ERC721TwitterInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "tokenByIndex",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "tokenOfOwnerByIndex",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "tokenURI",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "totalSupply",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "transferFrom",
     values: [string, string, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "user2Address",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "username",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "verifySignature",
+    values: [string, BigNumberish, string, BytesLike]
   ): string;
 
   decodeFunctionResult(
@@ -151,6 +186,10 @@ interface ERC721TwitterInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "PERMIT_TYPEHASH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "address2User",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
@@ -173,6 +212,7 @@ interface ERC721TwitterInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "id2address", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
@@ -202,12 +242,32 @@ interface ERC721TwitterInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "tokenByIndex",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "tokenOfOwnerByIndex",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "totalSupply",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "transferFrom",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "user2Address",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "username", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "verifySignature",
+    data: BytesLike
+  ): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
@@ -215,6 +275,7 @@ interface ERC721TwitterInterface extends ethers.utils.Interface {
     "RoleAdminChanged(bytes32,bytes32,bytes32)": EventFragment;
     "RoleGranted(bytes32,address,address)": EventFragment;
     "RoleRevoked(bytes32,address,address)": EventFragment;
+    "SetUsername(string,string,uint256)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
@@ -223,6 +284,7 @@ interface ERC721TwitterInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "RoleAdminChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleGranted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleRevoked"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetUsername"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
@@ -261,6 +323,20 @@ export class ERC721Twitter extends Contract {
     }>;
 
     "PERMIT_TYPEHASH()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    address2User(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "address2User(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
       0: string;
     }>;
 
@@ -376,6 +452,20 @@ export class ERC721Twitter extends Contract {
       0: boolean;
     }>;
 
+    id2address(
+      userId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "id2address(uint256)"(
+      userId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -392,10 +482,11 @@ export class ERC721Twitter extends Contract {
       0: boolean;
     }>;
 
-    mint(
+    "mint(address,uint256,string,bytes)"(
       user: string,
       tokenId: BigNumberish,
       _username: string,
+      signatures: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -515,6 +606,36 @@ export class ERC721Twitter extends Contract {
       0: string;
     }>;
 
+    tokenByIndex(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "tokenByIndex(uint256)"(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    tokenOfOwnerByIndex(
+      owner: string,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "tokenOfOwnerByIndex(address,uint256)"(
+      owner: string,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
     tokenURI(
       _tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -531,6 +652,14 @@ export class ERC721Twitter extends Contract {
       0: string;
     }>;
 
+    totalSupply(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "totalSupply()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
     transferFrom(
       from: string,
       to: string,
@@ -545,6 +674,20 @@ export class ERC721Twitter extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    user2Address(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "user2Address(string)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
     username(
       arg0: BigNumberish,
       overrides?: CallOverrides
@@ -554,6 +697,26 @@ export class ERC721Twitter extends Contract {
 
     "username(uint256)"(
       arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    verifySignature(
+      user: string,
+      tokenId: BigNumberish,
+      _username: string,
+      signatures: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "verifySignature(address,uint256,string,bytes)"(
+      user: string,
+      tokenId: BigNumberish,
+      _username: string,
+      signatures: BytesLike,
       overrides?: CallOverrides
     ): Promise<{
       0: string;
@@ -571,6 +734,13 @@ export class ERC721Twitter extends Contract {
   PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<string>;
 
   "PERMIT_TYPEHASH()"(overrides?: CallOverrides): Promise<string>;
+
+  address2User(arg0: string, overrides?: CallOverrides): Promise<string>;
+
+  "address2User(address)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   approve(
     to: string,
@@ -654,6 +824,13 @@ export class ERC721Twitter extends Contract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  id2address(userId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+  "id2address(uint256)"(
+    userId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   isApprovedForAll(
     owner: string,
     operator: string,
@@ -666,10 +843,11 @@ export class ERC721Twitter extends Contract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  mint(
+  "mint(address,uint256,string,bytes)"(
     user: string,
     tokenId: BigNumberish,
     _username: string,
+    signatures: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -770,12 +948,38 @@ export class ERC721Twitter extends Contract {
 
   "symbol()"(overrides?: CallOverrides): Promise<string>;
 
+  tokenByIndex(
+    index: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "tokenByIndex(uint256)"(
+    index: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  tokenOfOwnerByIndex(
+    owner: string,
+    index: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "tokenOfOwnerByIndex(address,uint256)"(
+    owner: string,
+    index: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   tokenURI(_tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   "tokenURI(uint256)"(
     _tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
+
+  totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   transferFrom(
     from: string,
@@ -791,10 +995,33 @@ export class ERC721Twitter extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  user2Address(arg0: string, overrides?: CallOverrides): Promise<string>;
+
+  "user2Address(string)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   username(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   "username(uint256)"(
     arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  verifySignature(
+    user: string,
+    tokenId: BigNumberish,
+    _username: string,
+    signatures: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  "verifySignature(address,uint256,string,bytes)"(
+    user: string,
+    tokenId: BigNumberish,
+    _username: string,
+    signatures: BytesLike,
     overrides?: CallOverrides
   ): Promise<string>;
 
@@ -810,6 +1037,13 @@ export class ERC721Twitter extends Contract {
     PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<string>;
 
     "PERMIT_TYPEHASH()"(overrides?: CallOverrides): Promise<string>;
+
+    address2User(arg0: string, overrides?: CallOverrides): Promise<string>;
+
+    "address2User(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     approve(
       to: string,
@@ -893,6 +1127,16 @@ export class ERC721Twitter extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    id2address(
+      userId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "id2address(uint256)"(
+      userId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -905,10 +1149,11 @@ export class ERC721Twitter extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    mint(
+    "mint(address,uint256,string,bytes)"(
       user: string,
       tokenId: BigNumberish,
       _username: string,
+      signatures: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1009,6 +1254,28 @@ export class ERC721Twitter extends Contract {
 
     "symbol()"(overrides?: CallOverrides): Promise<string>;
 
+    tokenByIndex(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "tokenByIndex(uint256)"(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    tokenOfOwnerByIndex(
+      owner: string,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "tokenOfOwnerByIndex(address,uint256)"(
+      owner: string,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     tokenURI(
       _tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -1018,6 +1285,10 @@ export class ERC721Twitter extends Contract {
       _tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferFrom(
       from: string,
@@ -1033,10 +1304,33 @@ export class ERC721Twitter extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    user2Address(arg0: string, overrides?: CallOverrides): Promise<string>;
+
+    "user2Address(string)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     username(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
     "username(uint256)"(
       arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    verifySignature(
+      user: string,
+      tokenId: BigNumberish,
+      _username: string,
+      signatures: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "verifySignature(address,uint256,string,bytes)"(
+      user: string,
+      tokenId: BigNumberish,
+      _username: string,
+      signatures: BytesLike,
       overrides?: CallOverrides
     ): Promise<string>;
   };
@@ -1072,6 +1366,8 @@ export class ERC721Twitter extends Contract {
       sender: string | null
     ): EventFilter;
 
+    SetUsername(oldName: null, newName: null, tokenId: null): EventFilter;
+
     Transfer(
       from: string | null,
       to: string | null,
@@ -1091,6 +1387,13 @@ export class ERC721Twitter extends Contract {
     PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<BigNumber>;
 
     "PERMIT_TYPEHASH()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    address2User(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "address2User(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     approve(
       to: string,
@@ -1177,6 +1480,16 @@ export class ERC721Twitter extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    id2address(
+      userId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "id2address(uint256)"(
+      userId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -1189,10 +1502,11 @@ export class ERC721Twitter extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    mint(
+    "mint(address,uint256,string,bytes)"(
       user: string,
       tokenId: BigNumberish,
       _username: string,
+      signatures: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -1296,6 +1610,28 @@ export class ERC721Twitter extends Contract {
 
     "symbol()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    tokenByIndex(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "tokenByIndex(uint256)"(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    tokenOfOwnerByIndex(
+      owner: string,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "tokenOfOwnerByIndex(address,uint256)"(
+      owner: string,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     tokenURI(
       _tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -1305,6 +1641,10 @@ export class ERC721Twitter extends Contract {
       _tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferFrom(
       from: string,
@@ -1320,10 +1660,33 @@ export class ERC721Twitter extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    user2Address(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "user2Address(string)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     username(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     "username(uint256)"(
       arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    verifySignature(
+      user: string,
+      tokenId: BigNumberish,
+      _username: string,
+      signatures: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "verifySignature(address,uint256,string,bytes)"(
+      user: string,
+      tokenId: BigNumberish,
+      _username: string,
+      signatures: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
@@ -1344,6 +1707,16 @@ export class ERC721Twitter extends Contract {
     PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "PERMIT_TYPEHASH()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    address2User(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "address2User(address)"(
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1435,6 +1808,16 @@ export class ERC721Twitter extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    id2address(
+      userId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "id2address(uint256)"(
+      userId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -1447,10 +1830,11 @@ export class ERC721Twitter extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    mint(
+    "mint(address,uint256,string,bytes)"(
       user: string,
       tokenId: BigNumberish,
       _username: string,
+      signatures: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -1554,6 +1938,28 @@ export class ERC721Twitter extends Contract {
 
     "symbol()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    tokenByIndex(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "tokenByIndex(uint256)"(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    tokenOfOwnerByIndex(
+      owner: string,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "tokenOfOwnerByIndex(address,uint256)"(
+      owner: string,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     tokenURI(
       _tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -1563,6 +1969,10 @@ export class ERC721Twitter extends Contract {
       _tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "totalSupply()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transferFrom(
       from: string,
@@ -1578,6 +1988,16 @@ export class ERC721Twitter extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    user2Address(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "user2Address(string)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     username(
       arg0: BigNumberish,
       overrides?: CallOverrides
@@ -1585,6 +2005,22 @@ export class ERC721Twitter extends Contract {
 
     "username(uint256)"(
       arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    verifySignature(
+      user: string,
+      tokenId: BigNumberish,
+      _username: string,
+      signatures: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "verifySignature(address,uint256,string,bytes)"(
+      user: string,
+      tokenId: BigNumberish,
+      _username: string,
+      signatures: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
