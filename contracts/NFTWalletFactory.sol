@@ -10,14 +10,16 @@ contract NFTWalletFactory is AccessControlEnumerable, EIP712 {
     event NewWallet(address user, uint256 uid, address wallet);
     bytes32 public constant PERMIT_TYPEHASH =
         keccak256("NFTWallet(address user,uint256 uid)");
+    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
     constructor() EIP712("NFTWallet", "1.0") {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
+        _setupRole(ADMIN_ROLE, _msgSender());
     }
 
     modifier onlyAdmin() {
         require(
-            hasRole(DEFAULT_ADMIN_ROLE, _msgSender()),
+            hasRole(ADMIN_ROLE, _msgSender()),
             "NFTWalletFactory: must have admin role to mint"
         );
         _;
@@ -42,7 +44,7 @@ contract NFTWalletFactory is AccessControlEnumerable, EIP712 {
     ) external returns (address) {
         address signer = verifySignature(user, uid, signatures);
         require(
-            hasRole(DEFAULT_ADMIN_ROLE, signer),
+            hasRole(ADMIN_ROLE, signer),
             "NFTWalletFactory: must have admin role to mint"
         );
         bytes32 salt = keccak256(abi.encode(uid));

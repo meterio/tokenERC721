@@ -22,6 +22,7 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface NFTWalletFactoryInterface extends ethers.utils.Interface {
   functions: {
+    "ADMIN_ROLE()": FunctionFragment;
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
     "PERMIT_TYPEHASH()": FunctionFragment;
     "deploy(address,uint256,bytes)": FunctionFragment;
@@ -39,6 +40,10 @@ interface NFTWalletFactoryInterface extends ethers.utils.Interface {
     "verifySignature(address,uint256,bytes)": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "ADMIN_ROLE",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "DEFAULT_ADMIN_ROLE",
     values?: undefined
@@ -97,6 +102,7 @@ interface NFTWalletFactoryInterface extends ethers.utils.Interface {
     values: [string, BigNumberish, BytesLike]
   ): string;
 
+  decodeFunctionResult(functionFragment: "ADMIN_ROLE", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "DEFAULT_ADMIN_ROLE",
     data: BytesLike
@@ -164,6 +170,14 @@ export class NFTWalletFactory extends Contract {
   interface: NFTWalletFactoryInterface;
 
   functions: {
+    ADMIN_ROLE(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "ADMIN_ROLE()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
@@ -355,6 +369,10 @@ export class NFTWalletFactory extends Contract {
     }>;
   };
 
+  ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+  "ADMIN_ROLE()"(overrides?: CallOverrides): Promise<string>;
+
   DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
 
   "DEFAULT_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<string>;
@@ -504,6 +522,10 @@ export class NFTWalletFactory extends Contract {
   ): Promise<string>;
 
   callStatic: {
+    ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+    "ADMIN_ROLE()"(overrides?: CallOverrides): Promise<string>;
+
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
 
     "DEFAULT_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<string>;
@@ -673,6 +695,10 @@ export class NFTWalletFactory extends Contract {
   };
 
   estimateGas: {
+    ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "ADMIN_ROLE()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
 
     "DEFAULT_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -826,6 +852,10 @@ export class NFTWalletFactory extends Contract {
   };
 
   populateTransaction: {
+    ADMIN_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "ADMIN_ROLE()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     DEFAULT_ADMIN_ROLE(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

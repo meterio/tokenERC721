@@ -9,6 +9,7 @@ import { mkdirSync, readFileSync, writeFileSync, existsSync } from "fs";
 import { compileSetting, allowVerifyChain } from "./scripts/deployTool";
 import { RPCS } from "./scripts/network";
 import { MerkleTree } from 'merkletreejs';
+import { walletSign, twitterSign } from "./test/utils/permitSign";
 
 import {
   deployContract,
@@ -19,7 +20,7 @@ import {
 } from "./scripts/helper";
 import { getSign } from "./scripts/permitSign"
 
-import { ERC721AMint, ERC721Twitter } from './typechain'
+import { ERC721AMint, ERC721Twitter, NFTWalletFactory } from './typechain'
 
 
 const dotenv = require("dotenv");
@@ -121,6 +122,75 @@ task("dt", "deploy ERC721 Twitter contract")
         deployer,
         ["Twitter username NFT", "TUN"]
       ) as ERC721Twitter;
+    }
+  );
+
+task("dw", "deploy wallet contract")
+  .setAction(
+    async ({ }, { ethers, run, network }) => {
+      await run("compile");
+      const [deployer] = await ethers.getSigners();
+      const factory = await deployContract(
+        "NFTWalletFactory",
+        network.name,
+        ethers.getContractFactory,
+        deployer
+      ) as NFTWalletFactory;
+    }
+  );
+
+/*
+npx hardhat ws \
+--contract 0xddaefa94207e0df66e029ae175736c984ee83d85 \
+--user 0xb88c136dC8ca5A8B3819B0Aeadf7c8706F59D897 \
+--id "100000" \
+--network metertest
+*/
+task("ws", "wallet signature")
+  .addParam("contract", "nftWalletFactory address")
+  .addParam("user", "user address")
+  .addParam("id", "user id")
+  .setAction(
+    async ({ contract, user, id }, { ethers, run, network }) => {
+      const [signer] = await ethers.getSigners();
+      let signature = await walletSign(
+        signer,
+        contract,
+        user,
+        id,
+        await signer.getChainId()
+      )
+      console.log("signer:", signer.address);
+      console.log("signature:", signature);
+    }
+  );
+
+/*
+npx hardhat ts \
+--contract 0x81d6e72b9cdcc865ec5f2ce64e24d0d92661f9e6 \
+--user 0xb88c136dC8ca5A8B3819B0Aeadf7c8706F59D897 \
+--name "user name" \
+--id "100000" \
+--network metertest
+*/
+task("ts", "twitter nft signature")
+  .addParam("contract", "twitter nft address")
+  .addParam("user", "user address")
+  .addParam("name", "user name")
+  .addParam("id", "token id")
+  .setAction(
+    async ({ contract, user, name, id }, { ethers, run, network }) => {
+      const [signer] = await ethers.getSigners();
+      let signature = await twitterSign(
+        signer,
+        contract,
+        user,
+        id,
+        name,
+        await signer.getChainId()
+      )
+      console.log("signer:", signer.address);
+      console.log("signature:", signature);
     }
   );
 
